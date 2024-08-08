@@ -15,8 +15,10 @@ public class Login {
     JLabel signUpLabel;
     JLabel emailLabel;
     JLabel passwordLabel;
+    JLabel nameLabel;
     JPasswordField passwordField;
     JTextField emailField;
+    JTextField nameField;
     JButton loginButton;
     JButton registerButton;
 
@@ -117,6 +119,34 @@ public class Login {
         signUpLabel.setFont(new Font("Arial", Font.BOLD, 30));
         signUpLabel.setBounds(40, 90, 200, 50);
         registerPanel.add(signUpLabel);
+
+        // NAME LABEL
+        nameLabel = new JLabel("Name");
+        nameLabel.setForeground(Color.white);
+        nameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        nameLabel.setBounds(40, 140, 200, 30);
+        registerPanel.add(nameLabel);
+
+        // NAME FIELD
+        nameField = new JTextField();
+        nameField.setBounds(40, 170, 200, 30);
+        registerPanel.add(nameField);
+
+        // EMAIL LABEL
+        emailLabel.setBounds(40, 210, 200, 30);
+        registerPanel.add(emailLabel);
+
+        // EMAIL FIELD
+        emailField.setBounds(40, 240, 200, 30);
+        registerPanel.add(emailField);
+
+        // PASSWORD LABEL
+        passwordLabel.setBounds(40, 280, 200, 30);
+        registerPanel.add(passwordLabel);
+
+        // PASSWORD FIELD
+        passwordField.setBounds(40, 310, 200, 30);
+        registerPanel.add(passwordField);
 
 
 
