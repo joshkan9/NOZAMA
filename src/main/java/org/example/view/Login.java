@@ -4,8 +4,6 @@ import org.example.controller.ButtonController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Login {
     JFrame window;
@@ -15,12 +13,14 @@ public class Login {
     JLabel signUpLabel;
     JLabel emailLabel;
     JLabel passwordLabel;
-    JLabel nameLabel;
+    JLabel firstNameLabel;
     JPasswordField passwordField;
     JTextField emailField;
-    JTextField nameField;
+    JTextField firstNameField;
     JButton loginButton;
     JButton registerButton;
+    JLabel lastNameLabel;
+    JTextField lastNameField;
 
     public void createLogin(ButtonController theChoice) {
 
@@ -106,7 +106,7 @@ public class Login {
 
         registerPanel = new JPanel();
         int panelWidth = 280;
-        int panelHeight = 400;
+        int panelHeight = 500;
         int xPosition = (window.getWidth() - panelWidth) / 2;
         int yPosition = (window.getHeight() - panelHeight) / 2;
         registerPanel.setBounds(xPosition, yPosition, panelWidth, panelHeight);
@@ -120,32 +120,44 @@ public class Login {
         signUpLabel.setBounds(40, 90, 200, 50);
         registerPanel.add(signUpLabel);
 
-        // NAME LABEL
-        nameLabel = new JLabel("Name");
-        nameLabel.setForeground(Color.white);
-        nameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-        nameLabel.setBounds(40, 140, 200, 30);
-        registerPanel.add(nameLabel);
+        // FIRST NAME LABEL
+        firstNameLabel = new JLabel("First Name");
+        firstNameLabel.setForeground(Color.white);
+        firstNameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        firstNameLabel.setBounds(40, 140, 200, 30);
+        registerPanel.add(firstNameLabel);
 
-        // NAME FIELD
-        nameField = new JTextField();
-        nameField.setBounds(40, 170, 200, 30);
-        registerPanel.add(nameField);
+        // FIRST NAME FIELD
+        firstNameField = new JTextField();
+        firstNameField.setBounds(40, 170, 200, 30);
+        registerPanel.add(firstNameField);
+
+        // LAST NAME LABEL
+        lastNameLabel = new JLabel("Last Name");
+        lastNameLabel.setForeground(Color.white);
+        lastNameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        lastNameLabel.setBounds(40, 210, 200, 30);
+        registerPanel.add(lastNameLabel);
+
+        // LAST NAME FIELD
+        lastNameField = new JTextField();
+        lastNameField.setBounds(40, 240, 200, 30);
+        registerPanel.add(lastNameField);
 
         // EMAIL LABEL
-        emailLabel.setBounds(40, 210, 200, 30);
+        emailLabel.setBounds(40, 280, 200, 30);
         registerPanel.add(emailLabel);
 
         // EMAIL FIELD
-        emailField.setBounds(40, 240, 200, 30);
+        emailField.setBounds(40, 310, 200, 30);
         registerPanel.add(emailField);
 
         // PASSWORD LABEL
-        passwordLabel.setBounds(40, 280, 200, 30);
+        passwordLabel.setBounds(40, 340, 200, 30);
         registerPanel.add(passwordLabel);
 
         // PASSWORD FIELD
-        passwordField.setBounds(40, 310, 200, 30);
+        passwordField.setBounds(40, 370, 200, 30);
         registerPanel.add(passwordField);
 
 
