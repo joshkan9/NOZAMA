@@ -1,9 +1,5 @@
 package org.example.view;
-
 import org.example.controller.ButtonController;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Online {
     Login login = new Login();
@@ -15,8 +11,6 @@ public class Online {
 
     public Online() {
         login.createLogin(theChoice);
-
     }
-
 }
 

@@ -8,19 +8,13 @@ import java.awt.*;
 public class Login {
     JFrame window;
     JPanel loginPanel;
-    JPanel registerPanel;
+    JPanel newPanel;  // Declare the new panel
     JLabel loginNameLabel;
-    JLabel signUpLabel;
     JLabel emailLabel;
     JLabel passwordLabel;
-    JLabel firstNameLabel;
     JPasswordField passwordField;
     JTextField emailField;
-    JTextField firstNameField;
     JButton loginButton;
-    JButton registerButton;
-    JLabel lastNameLabel;
-    JTextField lastNameField;
 
     public void createLogin(ButtonController theChoice) {
 
@@ -30,7 +24,7 @@ public class Login {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.getContentPane().setBackground(Color.black);
         window.setLayout(null);
-
+        window.setResizable(false);
         window.setLocationRelativeTo(null);
 
         // LOGO
@@ -80,93 +74,17 @@ public class Login {
         passwordField.setBounds(40, 230, 200, 30);
         loginPanel.add(passwordField);
 
-
         // LOGIN BUTTON
         loginButton = new JButton("Login");
+        loginButton.addActionListener(e -> {
+            window.remove(loginPanel);
+            window.add(new SQLQueries(window));
+            window.remove(logoLabel);
+        });
         loginButton.setBounds(90, 280, 100, 30);
         loginPanel.add(loginButton);
-        loginButton.addActionListener(theChoice);
-
-        // REGISTER BUTTON
-        registerButton = new JButton("Register");
-        registerButton.setBounds(90, 320, 100, 30);
-        registerButton.setActionCommand("Register");
-        loginPanel.add(registerButton);
-        registerButton.addActionListener(theChoice);
-
-
 
         window.add(loginPanel);
-
         window.setVisible(true);
     }
-
-    public void registerPage() {
-        window.remove(loginPanel);
-
-        registerPanel = new JPanel();
-        int panelWidth = 280;
-        int panelHeight = 500;
-        int xPosition = (window.getWidth() - panelWidth) / 2;
-        int yPosition = (window.getHeight() - panelHeight) / 2;
-        registerPanel.setBounds(xPosition, yPosition, panelWidth, panelHeight);
-        registerPanel.setBackground(Color.gray);
-        registerPanel.setLayout(null);
-
-        // SIGN UP LABEL
-        signUpLabel = new JLabel("SIGN UP");
-        signUpLabel.setForeground(Color.white);
-        signUpLabel.setFont(new Font("Arial", Font.BOLD, 30));
-        signUpLabel.setBounds(40, 90, 200, 50);
-        registerPanel.add(signUpLabel);
-
-        // FIRST NAME LABEL
-        firstNameLabel = new JLabel("First Name");
-        firstNameLabel.setForeground(Color.white);
-        firstNameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-        firstNameLabel.setBounds(40, 140, 200, 30);
-        registerPanel.add(firstNameLabel);
-
-        // FIRST NAME FIELD
-        firstNameField = new JTextField();
-        firstNameField.setBounds(40, 170, 200, 30);
-        registerPanel.add(firstNameField);
-
-        // LAST NAME LABEL
-        lastNameLabel = new JLabel("Last Name");
-        lastNameLabel.setForeground(Color.white);
-        lastNameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-        lastNameLabel.setBounds(40, 210, 200, 30);
-        registerPanel.add(lastNameLabel);
-
-        // LAST NAME FIELD
-        lastNameField = new JTextField();
-        lastNameField.setBounds(40, 240, 200, 30);
-        registerPanel.add(lastNameField);
-
-        // EMAIL LABEL
-        emailLabel.setBounds(40, 280, 200, 30);
-        registerPanel.add(emailLabel);
-
-        // EMAIL FIELD
-        emailField.setBounds(40, 310, 200, 30);
-        registerPanel.add(emailField);
-
-        // PASSWORD LABEL
-        passwordLabel.setBounds(40, 340, 200, 30);
-        registerPanel.add(passwordLabel);
-
-        // PASSWORD FIELD
-        passwordField.setBounds(40, 370, 200, 30);
-        registerPanel.add(passwordField);
-
-
-
-        window.add(registerPanel);
-        window.revalidate();
-        window.repaint();
-
-    }
-
-
 }
