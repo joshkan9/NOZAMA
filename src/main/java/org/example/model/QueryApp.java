@@ -19,10 +19,11 @@ public class QueryApp {
     private void createMainFrame() {
         mainFrame = new JFrame("Query Application");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(800, 800);  // Set the main frame to a larger size
+        mainFrame.setSize(800, 600);  // Set the main frame to a larger size
 
         // Create a panel with a GridBagLayout for centering the buttons
         mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(new Color(192,192,192));
 
         // Create a GridBagConstraints object to position the buttons in the center
         GridBagConstraints gbc = new GridBagConstraints();
@@ -32,10 +33,25 @@ public class QueryApp {
         gbc.anchor = GridBagConstraints.CENTER;
 
         // Create the buttons
-        JButton query1Button = new JButton("Query #1");
-        JButton query2Button = new JButton("Query #2");
-        JButton query3Button = new JButton("Query #3");
-        JButton query4Button = new JButton("Query #4");
+        JButton query1Button = styleButton("Query #1");
+        JLabel query1Label = new JLabel("Find the best-selling products in your store.", JLabel.CENTER);
+        query1Label.setFont(new Font("Arial", Font.BOLD, 17));
+        query1Label.setForeground(Color.BLACK);
+
+        JButton query2Button = styleButton("Query #2");
+        JLabel query2Label = new JLabel("Get the total revenue breakdown by state.", JLabel.CENTER);
+        query2Label.setFont(new Font("Arial", Font.BOLD, 17));
+        query2Label.setForeground(Color.BLACK);
+
+        JButton query3Button = styleButton("Query #3");
+        JLabel query3Label = new JLabel("Replace Later", JLabel.CENTER);
+        query3Label.setFont(new Font("Arial", Font.BOLD, 17));
+        query3Label.setForeground(Color.BLACK);
+
+        JButton query4Button = styleButton("Query #4");
+        JLabel query4Label = new JLabel("Replace Later", JLabel.CENTER);
+        query4Label.setFont(new Font("Arial", Font.BOLD, 17));
+        query4Label.setForeground(Color.BLACK);
 
         // Add action listeners to switch panels
         query1Button.addActionListener(e -> switchToQuery1Panel());
@@ -44,10 +60,25 @@ public class QueryApp {
         query4Button.addActionListener(e -> switchToQueryPanel("Query #4"));
 
         // Add the buttons to the main panel
+        gbc.gridy = 0;
         mainPanel.add(query1Button, gbc);
+        gbc.gridy++;
+        mainPanel.add(query1Label, gbc);
+
+        gbc.gridy++;
         mainPanel.add(query2Button, gbc);
+        gbc.gridy++;
+        mainPanel.add(query2Label, gbc);
+
+        gbc.gridy++;
         mainPanel.add(query3Button, gbc);
+        gbc.gridy++;
+        mainPanel.add(query3Label, gbc);
+
+        gbc.gridy++;
         mainPanel.add(query4Button, gbc);
+        gbc.gridy++;
+        mainPanel.add(query4Label, gbc);
 
         mainFrame.add(mainPanel);
         mainFrame.setLocationRelativeTo(null);
@@ -120,7 +151,7 @@ public class QueryApp {
                 + "JOIN orders o ON od.order_id = o.order_id "
                 + "WHERE o.status = 'completed' "
                 + "GROUP BY p.product_id, p.item_name "
-                + "ORDER BY total_revenue DESC;";
+                + "ORDER BY total_quantity_sold DESC;";
 
         Vector<Vector<Object>> data = new Vector<>();
         Vector<String> columnNames = new Vector<>();
@@ -225,4 +256,20 @@ public class QueryApp {
         mainFrame.setContentPane(mainPanel);
         mainFrame.revalidate();  // Refresh the frame to show the main content
     }
+
+    private JButton styleButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, 20));
+        button.setPreferredSize(new Dimension(150, 50));
+        button.setBackground(new Color(100, 149, 237));  // Cornflower blue
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+
+        // Set a border with rounded corners
+        button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+        return button;
+    }
+
+
 }

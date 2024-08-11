@@ -46,7 +46,7 @@ public class MainApp {
         membersPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         String[] members = {
-                "Joshua Kang", "Tyler Michael Cairney", "Brandon Raggihanti", "Christina Situ"
+                "Joshua Kang", "Tyler Cairney", "Brandon Raggihanti", "Christina Situ"
         };
 
         for (String member : members) {
