@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.controller.NozamaDatabase;
+
 import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
@@ -10,10 +12,6 @@ public class QueryApp {
     private JPanel mainPanel;
     private JPanel queryPanel;
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(QueryApp::new);
-    }
-
     public QueryApp() {
         createMainFrame();
     }
@@ -21,7 +19,7 @@ public class QueryApp {
     private void createMainFrame() {
         mainFrame = new JFrame("Query Application");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(600, 400);  // Set the main frame to a larger size
+        mainFrame.setSize(800, 800);  // Set the main frame to a larger size
 
         // Create a panel with a GridBagLayout for centering the buttons
         mainPanel = new JPanel(new GridBagLayout());
@@ -226,28 +224,5 @@ public class QueryApp {
     private void switchToMainPanel() {
         mainFrame.setContentPane(mainPanel);
         mainFrame.revalidate();  // Refresh the frame to show the main content
-    }
-}
-
-class NozamaDatabase {
-    public Connection connect() {
-        String url = "jdbc:mysql://localhost:3306/tcss_445_ecommerce_project";
-        String user = "root";
-        String password = "Rock;RevivalS2029Camille";
-        Connection con = null;
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection(url, user, password);
-            System.out.println("Connected");
-
-        } catch (ClassNotFoundException e1) {
-            e1.printStackTrace();
-
-        } catch (SQLException e2) {
-            e2.printStackTrace();
-        }
-
-        return con;
     }
 }
