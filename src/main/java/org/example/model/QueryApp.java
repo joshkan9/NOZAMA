@@ -34,7 +34,7 @@ public class QueryApp {
 
         // Create the buttons
         JButton query1Button = styleButton("Query #1");
-        JLabel query1Label = new JLabel("Find the best-selling products in your store.", JLabel.CENTER);
+        JLabel query1Label = new JLabel("Find the best-selling products in the store.", JLabel.CENTER);
         query1Label.setFont(new Font("Arial", Font.BOLD, 17));
         query1Label.setForeground(Color.BLACK);
 
