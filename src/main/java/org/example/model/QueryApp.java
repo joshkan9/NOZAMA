@@ -7,15 +7,24 @@ import java.awt.*;
 import java.sql.*;
 import java.util.Vector;
 
+/**
+ * QueryApp class that creates a GUI for the Query Application.
+ */
 public class QueryApp {
     private JFrame mainFrame;
     private JPanel mainPanel;
     private JPanel queryPanel;
 
+    /**
+     * Constructor that creates the main frame for the Query Application.
+     */
     public QueryApp() {
         createMainFrame();
     }
 
+    /**
+     * Method that creates the main frame for the Query Application.
+     */
     private void createMainFrame() {
         mainFrame = new JFrame("Query Application");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,6 +89,9 @@ public class QueryApp {
         mainFrame.setVisible(true);
     }
 
+    /**
+     * Method that switches the main frame to the Query #1 panel.
+     */
     private void switchToQuery1Panel() {
         queryPanel = new JPanel(new BorderLayout());
 
@@ -100,6 +112,9 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
+    /**
+     * Method that switches the main frame to the Query #2 panel.
+     */
     private void switchToQuery2Panel() {
         queryPanel = new JPanel(new BorderLayout());
 
@@ -135,6 +150,9 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
+    /**
+     * Method that switches the main frame to the Query #3 panel.
+     */
     private void switchToQuery3Panel() {
         queryPanel = new JPanel(new BorderLayout());
 
@@ -155,6 +173,10 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
+    /**
+     * Method that executes Query #1 and returns the result as a JTable.
+     * @return a JTable containing the result of Query #1
+     */
     private JTable executeQuery1AndGetTable() {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -199,6 +221,11 @@ public class QueryApp {
         return new JTable(data, columnNames);
     }
 
+    /**
+     * Method that executes Query #2 and returns the result as a JTable.
+     * @param userInput the user input for the query
+     * @return a JTable containing the result of Query #2
+     */
     private JTable executeQuery2AndGetTable(String userInput) {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -243,6 +270,10 @@ public class QueryApp {
         return new JTable(data, columnNames);
     }
 
+    /**
+     * Method that executes Query #3 and returns the result as a JTable.
+     * @return a JTable containing the result of Query #3
+     */
     private JTable executeQuery3AndGetTable() {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -287,6 +318,10 @@ public class QueryApp {
         return new JTable(data, columnNames);
     }
 
+    /**
+     * Method that switches the main frame to the Query panel with the given title.
+     * @param queryTitle the title of the query panel
+     */
     private void switchToQueryPanel(String queryTitle) {
         queryPanel = new JPanel(new BorderLayout());
 
@@ -306,11 +341,19 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
+    /**
+     * Method that switches the main frame to the main panel.
+     */
     private void switchToMainPanel() {
         mainFrame.setContentPane(mainPanel);
         mainFrame.revalidate();
     }
 
+    /**
+     * Method that styles a JButton with a given text.
+     * @param text the text of the JButton
+     * @return a styled JButton
+     */
     private JButton styleButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 20));
