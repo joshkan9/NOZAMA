@@ -129,8 +129,6 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
-
-
     /**
      * Method that switches the main frame to the Query #2 panel.
      */
