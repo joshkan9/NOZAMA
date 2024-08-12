@@ -3,7 +3,6 @@ package org.example.model;
 import org.example.controller.NozamaDatabase;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.sql.*;
 import java.util.Vector;
@@ -223,77 +222,11 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
-    private String[] fetchCategories() {
-        NozamaDatabase db = new NozamaDatabase();
-        Connection connection = db.connect();
-
-        String query = "SELECT DISTINCT category_name FROM categories";
-        Vector<String> categories = new Vector<>();
-
-        try {
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-
-            while (rs.next()) {
-                categories.add(rs.getString("category_name"));
-            }
-
-            rs.close();
-            stmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return categories.toArray(new String[0]);
-    }
-
-    private JTable executeQuery4AndGetTable(String category, double price) {
-        NozamaDatabase db = new NozamaDatabase();
-        Connection connection = db.connect();
-
-        String query = "SELECT p.product_id, p.item_name, p.price "
-                + "FROM products p "
-                + "JOIN categories c ON p.category_id = c.category_id "
-                + "WHERE c.category_name = ? AND p.price < ?";
-
-        Vector<Vector<Object>> data = new Vector<>();
-        Vector<String> columnNames = new Vector<>();
-
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(query);
-            pstmt.setString(1, category);
-            pstmt.setDouble(2, price);
-            ResultSet rs = pstmt.executeQuery();
-
-            ResultSetMetaData metaData = rs.getMetaData();
-            int columnCount = metaData.getColumnCount();
-
-            for (int i = 1; i <= columnCount; i++) {
-                columnNames.add(metaData.getColumnName(i));
-            }
-
-            while (rs.next()) {
-                Vector<Object> vector = new Vector<>();
-                for (int i = 1; i <= columnCount; i++) {
-                    vector.add(rs.getObject(i));
-                }
-                data.add(vector);
-            }
-
-            rs.close();
-            pstmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return new JTable(data, columnNames);
-    }
-
     private JTable executeQuery1AndGetTable() {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
 
-        String query = "SELECT p.product_id, p.item_name, SUM(od.quantity) AS total_quantity_sold, "
+        String query = "SELECT p.product_id AS 'Product ID', p.item_name, SUM(od.quantity) AS total_quantity_sold, "
                 + "SUM(od.quantity * od.price) AS total_revenue "
                 + "FROM products p "
                 + "JOIN orderdetails od ON p.product_id = od.product_id "
@@ -313,7 +246,7 @@ public class QueryApp {
             int columnCount = metaData.getColumnCount();
 
             for (int i = 1; i <= columnCount; i++) {
-                columnNames.add(metaData.getColumnName(i));
+                columnNames.add(metaData.getColumnLabel(i)); // Use getColumnLabel instead of getColumnName
             }
 
             while (rs.next()) {
@@ -421,6 +354,72 @@ public class QueryApp {
         return new JTable(data, columnNames);
     }
 
+    private String[] fetchCategories() {
+        NozamaDatabase db = new NozamaDatabase();
+        Connection connection = db.connect();
+
+        String query = "SELECT DISTINCT category_name FROM categories";
+        Vector<String> categories = new Vector<>();
+
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                categories.add(rs.getString("category_name"));
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return categories.toArray(new String[0]);
+    }
+
+    private JTable executeQuery4AndGetTable(String category, double price) {
+        NozamaDatabase db = new NozamaDatabase();
+        Connection connection = db.connect();
+
+        String query = "SELECT p.product_id, p.item_name, p.price "
+                + "FROM products p "
+                + "JOIN categories c ON p.category_id = c.category_id "
+                + "WHERE c.category_name = ? AND p.price < ?";
+
+        Vector<Vector<Object>> data = new Vector<>();
+        Vector<String> columnNames = new Vector<>();
+
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setString(1, category);
+            pstmt.setDouble(2, price);
+            ResultSet rs = pstmt.executeQuery();
+
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            for (int i = 1; i <= columnCount; i++) {
+                columnNames.add(metaData.getColumnName(i));
+            }
+
+            while (rs.next()) {
+                Vector<Object> vector = new Vector<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    vector.add(rs.getObject(i));
+                }
+                data.add(vector);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return new JTable(data, columnNames);
+    }
+
     private void switchToMainPanel() {
         mainFrame.setContentPane(mainPanel);
         mainFrame.revalidate();
@@ -433,9 +432,7 @@ public class QueryApp {
         button.setBackground(new Color(100, 149, 237));
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
-
         button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
-
         return button;
     }
 
