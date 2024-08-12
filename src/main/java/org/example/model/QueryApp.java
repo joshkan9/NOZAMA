@@ -19,20 +19,17 @@ public class QueryApp {
     private void createMainFrame() {
         mainFrame = new JFrame("Query Application");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(800, 600);  // Set the main frame to a larger size
+        mainFrame.setSize(800, 600);
 
-        // Create a panel with a GridBagLayout for centering the buttons
         mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBackground(new Color(192,192,192));
 
-        // Create a GridBagConstraints object to position the buttons in the center
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
-        gbc.insets = new Insets(10, 10, 10, 10); // Add padding around the buttons
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.CENTER;
 
-        // Create the buttons
         JButton query1Button = styleButton("Query #1");
         JLabel query1Label = new JLabel("Find the best-selling products in the store.", JLabel.CENTER);
         query1Label.setFont(new Font("Arial", Font.BOLD, 17));
@@ -44,7 +41,7 @@ public class QueryApp {
         query2Label.setForeground(Color.BLACK);
 
         JButton query3Button = styleButton("Query #3");
-        JLabel query3Label = new JLabel("Replace Later", JLabel.CENTER);
+        JLabel query3Label = new JLabel("Find the top customers by total revenue.", JLabel.CENTER);
         query3Label.setFont(new Font("Arial", Font.BOLD, 17));
         query3Label.setForeground(Color.BLACK);
 
@@ -53,13 +50,11 @@ public class QueryApp {
         query4Label.setFont(new Font("Arial", Font.BOLD, 17));
         query4Label.setForeground(Color.BLACK);
 
-        // Add action listeners to switch panels
         query1Button.addActionListener(e -> switchToQuery1Panel());
         query2Button.addActionListener(e -> switchToQuery2Panel());
-        query3Button.addActionListener(e -> switchToQueryPanel("Query #3"));
+        query3Button.addActionListener(e -> switchToQuery3Panel());
         query4Button.addActionListener(e -> switchToQueryPanel("Query #4"));
 
-        // Add the buttons to the main panel
         gbc.gridy = 0;
         mainPanel.add(query1Button, gbc);
         gbc.gridy++;
@@ -89,8 +84,8 @@ public class QueryApp {
         queryPanel = new JPanel(new BorderLayout());
 
         JButton backButton = new JButton("Back");
-        backButton.setPreferredSize(new Dimension(75, 30)); // Set a smaller size for the back button
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Use FlowLayout to align left
+        backButton.setPreferredSize(new Dimension(75, 30));
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(backButton);
 
         backButton.addActionListener(e -> switchToMainPanel());
@@ -102,15 +97,15 @@ public class QueryApp {
         queryPanel.add(scrollPane, BorderLayout.CENTER);
 
         mainFrame.setContentPane(queryPanel);
-        mainFrame.revalidate();  // Refresh the frame to show the new content
+        mainFrame.revalidate();
     }
 
     private void switchToQuery2Panel() {
         queryPanel = new JPanel(new BorderLayout());
 
         JButton backButton = new JButton("Back");
-        backButton.setPreferredSize(new Dimension(75, 30)); // Set a smaller size for the back button
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Use FlowLayout to align left
+        backButton.setPreferredSize(new Dimension(75, 30));
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(backButton);
 
         backButton.addActionListener(e -> switchToMainPanel());
@@ -131,13 +126,33 @@ public class QueryApp {
             String userInput = stateInput.getText();
             JTable resultTable = executeQuery2AndGetTable(userInput);
             JScrollPane scrollPane = new JScrollPane(resultTable);
-            queryPanel.remove(inputPanel); // Remove input panel after submission
+            queryPanel.remove(inputPanel);
             queryPanel.add(scrollPane, BorderLayout.CENTER);
-            mainFrame.revalidate(); // Refresh the frame to show the new content
+            mainFrame.revalidate();
         });
 
         mainFrame.setContentPane(queryPanel);
-        mainFrame.revalidate();  // Refresh the frame to show the new content
+        mainFrame.revalidate();
+    }
+
+    private void switchToQuery3Panel() {
+        queryPanel = new JPanel(new BorderLayout());
+
+        JButton backButton = new JButton("Back");
+        backButton.setPreferredSize(new Dimension(75, 30));
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.add(backButton);
+
+        backButton.addActionListener(e -> switchToMainPanel());
+
+        JTable resultTable = executeQuery3AndGetTable();
+        JScrollPane scrollPane = new JScrollPane(resultTable);
+
+        queryPanel.add(topPanel, BorderLayout.NORTH);
+        queryPanel.add(scrollPane, BorderLayout.CENTER);
+
+        mainFrame.setContentPane(queryPanel);
+        mainFrame.revalidate();
     }
 
     private JTable executeQuery1AndGetTable() {
@@ -163,12 +178,10 @@ public class QueryApp {
             ResultSetMetaData metaData = rs.getMetaData();
             int columnCount = metaData.getColumnCount();
 
-            // Column names
             for (int i = 1; i <= columnCount; i++) {
                 columnNames.add(metaData.getColumnName(i));
             }
 
-            // Data rows
             while (rs.next()) {
                 Vector<Object> vector = new Vector<>();
                 for (int i = 1; i <= columnCount; i++) {
@@ -209,12 +222,10 @@ public class QueryApp {
             ResultSetMetaData metaData = rs.getMetaData();
             int columnCount = metaData.getColumnCount();
 
-            // Column names
             for (int i = 1; i <= columnCount; i++) {
                 columnNames.add(metaData.getColumnName(i));
             }
 
-            // Data rows
             while (rs.next()) {
                 Vector<Object> vector = new Vector<>();
                 for (int i = 1; i <= columnCount; i++) {
@@ -232,15 +243,58 @@ public class QueryApp {
         return new JTable(data, columnNames);
     }
 
+    private JTable executeQuery3AndGetTable() {
+        NozamaDatabase db = new NozamaDatabase();
+        Connection connection = db.connect();
+
+        String query = "SELECT c.customer_id as 'Customer ID', c.first_name, c.last_name, COUNT(od.product_id) AS total_products_purchased, "
+                + "SUM(od.quantity * od.price) AS total_revenue "
+                + "FROM customers c "
+                + "JOIN orders o ON c.customer_id = o.customer_id "
+                + "JOIN orderdetails od ON o.order_id = od.order_id "
+                + "JOIN products p ON od.product_id = p.product_id "
+                + "GROUP BY c.customer_id, c.first_name, c.last_name "
+                + "ORDER BY total_revenue DESC;";
+
+        Vector<Vector<Object>> data = new Vector<>();
+        Vector<String> columnNames = new Vector<>();
+
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            for (int i = 1; i <= columnCount; i++) {
+                columnNames.add(metaData.getColumnName(i));
+            }
+
+            while (rs.next()) {
+                Vector<Object> vector = new Vector<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    vector.add(rs.getObject(i));
+                }
+                data.add(vector);
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return new JTable(data, columnNames);
+    }
+
     private void switchToQueryPanel(String queryTitle) {
         queryPanel = new JPanel(new BorderLayout());
 
         JLabel queryLabel = new JLabel(queryTitle, SwingConstants.CENTER);
         JButton backButton = new JButton("Back");
 
-        // Make the back button small and place it at the top left corner
-        backButton.setPreferredSize(new Dimension(75, 30)); // Set a smaller size for the back button
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Use FlowLayout to align left
+        backButton.setPreferredSize(new Dimension(75, 30));
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(backButton);
 
         backButton.addActionListener(e -> switchToMainPanel());
@@ -249,27 +303,24 @@ public class QueryApp {
         queryPanel.add(queryLabel, BorderLayout.CENTER);
 
         mainFrame.setContentPane(queryPanel);
-        mainFrame.revalidate();  // Refresh the frame to show the new content
+        mainFrame.revalidate();
     }
 
     private void switchToMainPanel() {
         mainFrame.setContentPane(mainPanel);
-        mainFrame.revalidate();  // Refresh the frame to show the main content
+        mainFrame.revalidate();
     }
 
     private JButton styleButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 20));
         button.setPreferredSize(new Dimension(150, 50));
-        button.setBackground(new Color(100, 149, 237));  // Cornflower blue
+        button.setBackground(new Color(100, 149, 237));
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
 
-        // Set a border with rounded corners
         button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
 
         return button;
     }
-
-
 }
