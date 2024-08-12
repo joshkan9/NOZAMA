@@ -42,7 +42,7 @@ public class MainApp {
         topPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Logo
-        JLabel logoLabel = new JLabel(new ImageIcon("src/main/resources/nozama.png")); // Add the path to your logo file
+        JLabel logoLabel = new JLabel(new ImageIcon("src/main/resources/nozama.png"));
         logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         topPanel.add(logoLabel);
 
