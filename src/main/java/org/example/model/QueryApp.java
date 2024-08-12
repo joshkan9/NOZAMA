@@ -139,20 +139,29 @@ public class QueryApp {
         // Reduce vertical spacing between components
         gbc.insets = new Insets(0, 10, 5, 10); // Small vertical spacing
 
-        // State Label and Input Field
-        JLabel stateLabel = new JLabel("Enter State:");
+        // State Label and Dropdown
+        JLabel stateLabel = new JLabel("Select State:");
         stateLabel.setFont(new Font("Arial", Font.BOLD, 18));  // Bold and larger font
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
         inputPanel.add(stateLabel, gbc);
 
-        JTextField stateInput = new JTextField(20);  // Text field size
-        stateInput.setFont(new Font("Arial", Font.PLAIN, 18));
+        // Dropdown menu for state selection
+        String[] states = {
+                "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA",
+                "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+                "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT",
+                "VA", "WA", "WV", "WI", "WY"
+        };
+
+        JComboBox<String> stateDropdown = new JComboBox<>(states);
+        stateDropdown.setFont(new Font("Arial", Font.PLAIN, 18));
+        stateDropdown.setPreferredSize(new Dimension(150, 30));  // Dropdown size
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.CENTER;
-        inputPanel.add(stateInput, gbc);
+        inputPanel.add(stateDropdown, gbc);
 
         // Submit Button
         JButton submitButton = new JButton("Submit");
@@ -173,8 +182,8 @@ public class QueryApp {
         queryPanel.add(wrapperPanel, BorderLayout.CENTER);
 
         submitButton.addActionListener(e -> {
-            String userInput = stateInput.getText();
-            JTable resultTable = executeQuery2AndGetTable(userInput);
+            String selectedState = (String) stateDropdown.getSelectedItem();
+            JTable resultTable = executeQuery2AndGetTable(selectedState);
             JScrollPane scrollPane = new JScrollPane(resultTable);
             queryPanel.remove(wrapperPanel);
             queryPanel.add(scrollPane, BorderLayout.CENTER);
@@ -184,6 +193,7 @@ public class QueryApp {
         mainFrame.setContentPane(queryPanel);
         mainFrame.revalidate();
     }
+
 
 
 
