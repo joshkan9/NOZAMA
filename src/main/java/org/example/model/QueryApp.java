@@ -222,28 +222,70 @@ public class QueryApp {
     private void switchToQuery4Panel() {
         queryPanel = new JPanel(new BorderLayout());
 
+        // Back Button
         JButton backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(75, 30));
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(backButton);
-
         backButton.addActionListener(e -> switchToMainPanel());
 
-        JPanel inputPanel = new JPanel(new FlowLayout());
-        JLabel categoryLabel = new JLabel("Select Category:");
-        JComboBox<String> categoryComboBox = new JComboBox<>(fetchCategories());
-        JLabel priceLabel = new JLabel("Price Less Than:");
-        JTextField priceInput = new JTextField(10);
-        JButton submitButton = new JButton("Submit");
+        // Centered Panel for Input and Submit Button
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        inputPanel.add(categoryLabel);
-        inputPanel.add(categoryComboBox);
-        inputPanel.add(priceLabel);
-        inputPanel.add(priceInput);
-        inputPanel.add(submitButton);
+        // Reduce vertical spacing between components
+        gbc.insets = new Insets(0, 10, 5, 10); // Small vertical spacing
+
+        // Category Label and ComboBox
+        JLabel categoryLabel = new JLabel("Select Category:");
+        categoryLabel.setFont(new Font("Arial", Font.BOLD, 18));  // Bold and larger font
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        inputPanel.add(categoryLabel, gbc);
+
+        JComboBox<String> categoryComboBox = new JComboBox<>(fetchCategories());
+        categoryComboBox.setFont(new Font("Arial", Font.PLAIN, 18));
+        categoryComboBox.setPreferredSize(new Dimension(200, 30));  // Dropdown size
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        inputPanel.add(categoryComboBox, gbc);
+
+        // Price Label and Input
+        JLabel priceLabel = new JLabel("Price Less Than:");
+        priceLabel.setFont(new Font("Arial", Font.BOLD, 18));  // Bold and larger font
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        inputPanel.add(priceLabel, gbc);
+
+        JTextField priceInput = new JTextField(10);
+        priceInput.setFont(new Font("Arial", Font.PLAIN, 18));
+        priceInput.setPreferredSize(new Dimension(300, 30)); // Same width as the dropdown menu
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        inputPanel.add(priceInput, gbc);
+
+        // Submit Button
+        JButton submitButton = new JButton("Submit");
+        submitButton.setPreferredSize(new Dimension(100, 30));  // Increase size of button
+        submitButton.setFont(new Font("Arial", Font.BOLD, 18));
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(15, 10, 0, 10); // Add a bit more space above the button
+        inputPanel.add(submitButton, gbc);
+
+        // Adding the input panel to the query panel with extra padding on top to move it upwards
+        JPanel wrapperPanel = new JPanel(new BorderLayout());
+        wrapperPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0)); // 50 pixels top padding
+        wrapperPanel.add(inputPanel, BorderLayout.NORTH);
 
         queryPanel.add(topPanel, BorderLayout.NORTH);
-        queryPanel.add(inputPanel, BorderLayout.CENTER);
+        queryPanel.add(wrapperPanel, BorderLayout.CENTER);
 
         submitButton.addActionListener(e -> {
             String selectedCategory = (String) categoryComboBox.getSelectedItem();
@@ -252,7 +294,7 @@ public class QueryApp {
                 double price = Double.parseDouble(priceText);
                 JTable resultTable = executeQuery4AndGetTable(selectedCategory, price);
                 JScrollPane scrollPane = new JScrollPane(resultTable);
-                queryPanel.remove(inputPanel);
+                queryPanel.remove(wrapperPanel);
                 queryPanel.add(scrollPane, BorderLayout.CENTER);
                 mainFrame.revalidate();
             } catch (NumberFormatException ex) {
@@ -263,6 +305,8 @@ public class QueryApp {
         mainFrame.setContentPane(queryPanel);
         mainFrame.revalidate();
     }
+
+
 
     private JTable executeQuery1AndGetTable() {
         NozamaDatabase db = new NozamaDatabase();
