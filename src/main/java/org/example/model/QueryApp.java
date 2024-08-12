@@ -390,7 +390,7 @@ public class QueryApp {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
 
-        String query = "SELECT c.customer_id, c.first_name, c.last_name, COUNT(od.product_id) AS total_products_purchased, "
+        String query = "SELECT c.customer_id, c.first_name, c.last_name, COUNT(od.product_id) AS 'Total Products Purchased', "
                 + "SUM(od.quantity * od.price) AS total_revenue "
                 + "FROM customers c "
                 + "JOIN orders o ON c.customer_id = o.customer_id "
