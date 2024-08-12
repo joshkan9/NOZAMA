@@ -49,7 +49,7 @@ public class QueryApp {
         query3Label.setForeground(Color.BLACK);
 
         JButton query4Button = styleButton("Query #4");
-        JLabel query4Label = new JLabel("Search a category for a item below a specific price.", JLabel.CENTER);
+        JLabel query4Label = new JLabel("Search a category for an item below a specific price.", JLabel.CENTER);
         query4Label.setFont(new Font("Arial", Font.BOLD, 17));
         query4Label.setForeground(Color.BLACK);
 
