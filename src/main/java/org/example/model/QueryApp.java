@@ -7,15 +7,24 @@ import java.awt.*;
 import java.sql.*;
 import java.util.Vector;
 
+/**
+ * QueryApp class that creates a GUI for the Query Application.
+ */
 public class QueryApp {
     private JFrame mainFrame;
     private JPanel mainPanel;
     private JPanel queryPanel;
 
+    /**
+     * Constructor that creates the main frame for the Query Application.
+     */
     public QueryApp() {
         createMainFrame();
     }
 
+    /**
+     * Method that creates the main frame for the Query Application.
+     */
     private void createMainFrame() {
         mainFrame = new JFrame("Query Application");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,6 +89,9 @@ public class QueryApp {
         mainFrame.setVisible(true);
     }
 
+    /**
+     * Method that switches the main frame to the Query #1 panel.
+     */
     private void switchToQuery1Panel() {
         queryPanel = new JPanel(new BorderLayout());
 
@@ -100,6 +112,9 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
+    /**
+     * Method that switches the main frame to the Query #2 panel.
+     */
     private void switchToQuery2Panel() {
         queryPanel = new JPanel(new BorderLayout());
 
@@ -135,6 +150,9 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
+    /**
+     * Method that switches the main frame to the Query #3 panel.
+     */
     private void switchToQuery3Panel() {
         queryPanel = new JPanel(new BorderLayout());
 
@@ -155,117 +173,10 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
-    private void switchToQuery4Panel() {
-        queryPanel = new JPanel(new BorderLayout());
-
-        JButton backButton = new JButton("Back");
-        backButton.setPreferredSize(new Dimension(75, 30));
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.add(backButton);
-
-        backButton.addActionListener(e -> switchToMainPanel());
-
-        JPanel inputPanel = new JPanel(new FlowLayout());
-        JLabel categoryLabel = new JLabel("Select Category:");
-        JComboBox<String> categoryComboBox = new JComboBox<>(fetchCategories());
-        JLabel priceLabel = new JLabel("Price Less Than:");
-        JTextField priceInput = new JTextField(10);
-        JButton submitButton = new JButton("Submit");
-
-        inputPanel.add(categoryLabel);
-        inputPanel.add(categoryComboBox);
-        inputPanel.add(priceLabel);
-        inputPanel.add(priceInput);
-        inputPanel.add(submitButton);
-
-        queryPanel.add(topPanel, BorderLayout.NORTH);
-        queryPanel.add(inputPanel, BorderLayout.CENTER);
-
-        submitButton.addActionListener(e -> {
-            String selectedCategory = (String) categoryComboBox.getSelectedItem();
-            String priceText = priceInput.getText();
-            try {
-                double price = Double.parseDouble(priceText);
-                JTable resultTable = executeQuery4AndGetTable(selectedCategory, price);
-                JScrollPane scrollPane = new JScrollPane(resultTable);
-                queryPanel.remove(inputPanel);
-                queryPanel.add(scrollPane, BorderLayout.CENTER);
-                mainFrame.revalidate();
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(mainFrame, "Please enter a valid price.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        mainFrame.setContentPane(queryPanel);
-        mainFrame.revalidate();
-    }
-
-    private String[] fetchCategories() {
-        NozamaDatabase db = new NozamaDatabase();
-        Connection connection = db.connect();
-
-        String query = "SELECT DISTINCT category_name FROM categories";
-        Vector<String> categories = new Vector<>();
-
-        try {
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-
-            while (rs.next()) {
-                categories.add(rs.getString("category_name"));
-            }
-
-            rs.close();
-            stmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return categories.toArray(new String[0]);
-    }
-
-    private JTable executeQuery4AndGetTable(String category, double price) {
-        NozamaDatabase db = new NozamaDatabase();
-        Connection connection = db.connect();
-
-        String query = "SELECT p.product_id, p.item_name, p.price "
-                + "FROM products p "
-                + "JOIN categories c ON p.category_id = c.category_id "
-                + "WHERE c.category_name = ? AND p.price < ?";
-
-        Vector<Vector<Object>> data = new Vector<>();
-        Vector<String> columnNames = new Vector<>();
-
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(query);
-            pstmt.setString(1, category);
-            pstmt.setDouble(2, price);
-            ResultSet rs = pstmt.executeQuery();
-
-            ResultSetMetaData metaData = rs.getMetaData();
-            int columnCount = metaData.getColumnCount();
-
-            for (int i = 1; i <= columnCount; i++) {
-                columnNames.add(metaData.getColumnName(i));
-            }
-
-            while (rs.next()) {
-                Vector<Object> vector = new Vector<>();
-                for (int i = 1; i <= columnCount; i++) {
-                    vector.add(rs.getObject(i));
-                }
-                data.add(vector);
-            }
-
-            rs.close();
-            pstmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return new JTable(data, columnNames);
-    }
-
+    /**
+     * Method that executes Query #1 and returns the result as a JTable.
+     * @return a JTable containing the result of Query #1
+     */
     private JTable executeQuery1AndGetTable() {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -310,6 +221,11 @@ public class QueryApp {
         return new JTable(data, columnNames);
     }
 
+    /**
+     * Method that executes Query #2 and returns the result as a JTable.
+     * @param userInput the user input for the query
+     * @return a JTable containing the result of Query #2
+     */
     private JTable executeQuery2AndGetTable(String userInput) {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -354,6 +270,10 @@ public class QueryApp {
         return new JTable(data, columnNames);
     }
 
+    /**
+     * Method that executes Query #3 and returns the result as a JTable.
+     * @return a JTable containing the result of Query #3
+     */
     private JTable executeQuery3AndGetTable() {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -398,11 +318,42 @@ public class QueryApp {
         return new JTable(data, columnNames);
     }
 
+    /**
+     * Method that switches the main frame to the Query panel with the given title.
+     * @param queryTitle the title of the query panel
+     */
+    private void switchToQueryPanel(String queryTitle) {
+        queryPanel = new JPanel(new BorderLayout());
+
+        JLabel queryLabel = new JLabel(queryTitle, SwingConstants.CENTER);
+        JButton backButton = new JButton("Back");
+
+        backButton.setPreferredSize(new Dimension(75, 30));
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.add(backButton);
+
+        backButton.addActionListener(e -> switchToMainPanel());
+
+        queryPanel.add(topPanel, BorderLayout.NORTH);
+        queryPanel.add(queryLabel, BorderLayout.CENTER);
+
+        mainFrame.setContentPane(queryPanel);
+        mainFrame.revalidate();
+    }
+
+    /**
+     * Method that switches the main frame to the main panel.
+     */
     private void switchToMainPanel() {
         mainFrame.setContentPane(mainPanel);
         mainFrame.revalidate();
     }
 
+    /**
+     * Method that styles a JButton with a given text.
+     * @param text the text of the JButton
+     * @return a styled JButton
+     */
     private JButton styleButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 20));

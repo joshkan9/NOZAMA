@@ -4,11 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Class to connect to the Nozama database.
+ */
 public class NozamaDatabase {
     public Connection connect() {
         String url = "jdbc:mysql://localhost:3306/tcss_445_ecommerce_project";
         String user = "root";
-        String password = "password";
+        String password = "Rock;RevivalS2029Camille";
         Connection con = null;
 
         try {

@@ -3,18 +3,31 @@ package org.example.model;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Main application window that displays the project's logo, title, members' contact information, project description,
+ */
 public class MainApp {
     private JFrame mainFrame;
     private JPanel mainPanel;
 
+    /**
+     * Main method to start the application.
+     * @param args Command-line arguments
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(MainApp::new);
     }
 
+    /**
+     * Constructor to create the main application window.
+     */
     public MainApp() {
         createMainFrame();
     }
 
+    /**
+     * Create the main application frame with the project's logo, title, members' contact information, and project description.
+     */
     private void createMainFrame() {
         mainFrame = new JFrame("Main Application");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -81,6 +94,9 @@ public class MainApp {
         mainFrame.setVisible(true);
     }
 
+    /**
+     * Open the QueryApp window and close the main application window.
+     */
     private void openQueryApp() {
         mainFrame.dispose(); // Close the main application frame
         SwingUtilities.invokeLater(QueryApp::new); // Open the QueryApp
