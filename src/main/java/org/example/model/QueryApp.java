@@ -342,19 +342,19 @@ public class QueryApp {
     }
 
 
-
     private JTable executeQuery1AndGetTable() {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
 
         String query = "SELECT p.product_id AS 'Product ID', p.item_name AS 'Item Name', SUM(od.quantity) AS 'Total Quantity Sold', "
-                + "SUM(od.quantity * od.price) AS 'Total Revenue'"
+                + "SUM(od.quantity * od.price) AS 'Total Revenue' "
                 + "FROM products p "
                 + "JOIN orderdetails od ON p.product_id = od.product_id "
                 + "JOIN orders o ON od.order_id = o.order_id "
                 + "WHERE o.status = 'completed' "
                 + "GROUP BY p.product_id, p.item_name "
-                + "ORDER BY 'Total Quantity Sold' DESC;";
+                + "ORDER BY `Total Quantity Sold` DESC;";
+
 
         Vector<Vector<Object>> data = new Vector<>();
         Vector<String> columnNames = new Vector<>();
@@ -435,13 +435,14 @@ public class QueryApp {
         Connection connection = db.connect();
 
         String query = "SELECT c.customer_id AS 'Customer ID', CONCAT(c.first_name, ' ', c.last_name) AS 'Full Name', COUNT(od.product_id) AS 'Quantity Purchased', "
-                + "SUM(od.quantity * od.price) AS 'Total Revenue'"
+                + "SUM(od.quantity * od.price) AS 'Total Revenue' "
                 + "FROM customers c "
                 + "JOIN orders o ON c.customer_id = o.customer_id "
                 + "JOIN orderdetails od ON o.order_id = od.order_id "
                 + "JOIN products p ON od.product_id = p.product_id "
                 + "GROUP BY c.customer_id, c.first_name, c.last_name "
-                + "ORDER BY 'Total Revenue' DESC;";
+                + "ORDER BY `Total Revenue` DESC;";
+
 
         Vector<Vector<Object>> data = new Vector<>();
         Vector<String> columnNames = new Vector<>();
