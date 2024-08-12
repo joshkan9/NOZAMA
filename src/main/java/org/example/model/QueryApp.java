@@ -355,15 +355,14 @@ public class QueryApp {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
 
-        String query = "SELECT c.customer_id AS 'Customer ID', CONCAT(c.first_name, ' ', c.last_name) AS 'Full Name', "
-                + "COUNT(od.product_id) AS 'Total Products Purchased',"
-                + "SUM(od.quantity * od.price) AS 'Total Revenue'"
+        String query = "SELECT c.customer_id, c.first_name, c.last_name, COUNT(od.product_id) AS 'Total Products Purchased', "
+                + "SUM(od.quantity * od.price) AS total_revenue "
                 + "FROM customers c "
                 + "JOIN orders o ON c.customer_id = o.customer_id "
                 + "JOIN orderdetails od ON o.order_id = od.order_id "
                 + "JOIN products p ON od.product_id = p.product_id "
                 + "GROUP BY c.customer_id, c.first_name, c.last_name "
-                + "ORDER BY 'Total Revenue' DESC;";
+                + "ORDER BY total_revenue DESC;";
 
         Vector<Vector<Object>> data = new Vector<>();
         Vector<String> columnNames = new Vector<>();
