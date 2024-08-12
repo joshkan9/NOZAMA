@@ -83,40 +83,52 @@ public class QueryApp {
     }
 
     private void switchToQuery1Panel() {
-        queryPanel = new JPanel(new BorderLayout());
-        queryPanel.setBackground(new Color(192, 192, 192));  // Light gray background
+        queryPanel = new JPanel(new GridBagLayout());
+        queryPanel.setBackground(new Color(230, 230, 250));  // Light lavender color
 
         JButton backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(75, 30));
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(backButton);
 
-        backButton.addActionListener(e -> switchToMainPanel());
+        // Set topPanel background to match queryPanel
+        topPanel.setBackground(new Color(230, 230, 250));
 
-        JLabel queryDescription = new JLabel("These are the best selling products!");
-        queryDescription.setFont(new Font("Arial", Font.BOLD, 16));
-        queryDescription.setHorizontalAlignment(SwingConstants.CENTER);
-        queryDescription.setBorder(BorderFactory.createEmptyBorder(QUERY_PANEL_DIMENSIONS, QUERY_PANEL_DIMENSIONS,
-                                                                   QUERY_PANEL_DIMENSIONS, QUERY_PANEL_DIMENSIONS));
+        backButton.addActionListener(e -> switchToMainPanel());
 
         JTable resultTable = executeQuery1AndGetTable();
         styleTable(resultTable);
 
         JScrollPane scrollPane = new JScrollPane(resultTable);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        // Set preferred size for scroll pane
+        scrollPane.setPreferredSize(new Dimension(700, 400));
 
-        contentPanel.add(queryDescription);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        contentPanel.add(scrollPane);
+        // Set scrollPane background
+        scrollPane.getViewport().setBackground(new Color(230, 230, 250));
 
-        queryPanel.add(topPanel, BorderLayout.NORTH);
-        queryPanel.add(contentPanel, BorderLayout.CENTER);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        queryPanel.add(topPanel, gbc);
+
+        gbc.gridy++;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;
+        queryPanel.add(scrollPane, gbc);
+
+        gbc.gridy++;
+        gbc.weighty = 0.1;
+        queryPanel.add(Box.createRigidArea(new Dimension(0, 10)), gbc);  // Adds some space below the table
 
         mainFrame.setContentPane(queryPanel);
         mainFrame.revalidate();
     }
+
 
 
     /**
@@ -194,30 +206,53 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
-
-
-
-
-
     private void switchToQuery3Panel() {
-        queryPanel = new JPanel(new BorderLayout());
+        queryPanel = new JPanel(new GridBagLayout());
+        queryPanel.setBackground(new Color(230, 230, 250));  // Light lavender color
 
         JButton backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(75, 30));
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(backButton);
 
+        // Set topPanel background to match queryPanel
+        topPanel.setBackground(new Color(230, 230, 250));
+
         backButton.addActionListener(e -> switchToMainPanel());
 
         JTable resultTable = executeQuery3AndGetTable();
-        JScrollPane scrollPane = new JScrollPane(resultTable);
+        styleTable(resultTable);
 
-        queryPanel.add(topPanel, BorderLayout.NORTH);
-        queryPanel.add(scrollPane, BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(resultTable);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Set preferred size for scroll pane
+        scrollPane.setPreferredSize(new Dimension(700, 400));
+
+        // Set scrollPane background
+        scrollPane.getViewport().setBackground(new Color(230, 230, 250));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        queryPanel.add(topPanel, gbc);
+
+        gbc.gridy++;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;
+        queryPanel.add(scrollPane, gbc);
+
+        gbc.gridy++;
+        gbc.weighty = 0.1;
+        queryPanel.add(Box.createRigidArea(new Dimension(0, 10)), gbc);  // Adds some space below the table
 
         mainFrame.setContentPane(queryPanel);
         mainFrame.revalidate();
     }
+
 
     private void switchToQuery4Panel() {
         queryPanel = new JPanel(new BorderLayout());
@@ -355,15 +390,14 @@ public class QueryApp {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
 
-        String query = "SELECT c.customer_id AS 'Customer ID', CONCAT(c.first_name, ' ', c.last_name) AS 'Full Name', "
-                + "COUNT(od.product_id) AS 'Total Products Purchased',"
-                + "SUM(od.quantity * od.price) AS 'Total Revenue'"
+        String query = "SELECT c.customer_id, c.first_name, c.last_name, COUNT(od.product_id) AS total_products_purchased, "
+                + "SUM(od.quantity * od.price) AS total_revenue "
                 + "FROM customers c "
                 + "JOIN orders o ON c.customer_id = o.customer_id "
                 + "JOIN orderdetails od ON o.order_id = od.order_id "
                 + "JOIN products p ON od.product_id = p.product_id "
                 + "GROUP BY c.customer_id, c.first_name, c.last_name "
-                + "ORDER BY 'Total Revenue' DESC;";
+                + "ORDER BY total_revenue DESC;";
 
         Vector<Vector<Object>> data = new Vector<>();
         Vector<String> columnNames = new Vector<>();
@@ -479,7 +513,7 @@ public class QueryApp {
     }
 
     private void styleTable(JTable table) {
-        table.setRowHeight(20);
+        table.setRowHeight(32);
         table.setFont(new Font("Arial", Font.PLAIN, 14));
         table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 17));
 
