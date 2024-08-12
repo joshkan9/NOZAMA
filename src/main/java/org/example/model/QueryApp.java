@@ -3,6 +3,7 @@ package org.example.model;
 import org.example.controller.NozamaDatabase;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.sql.*;
 import java.util.Vector;
@@ -82,6 +83,7 @@ public class QueryApp {
 
     private void switchToQuery1Panel() {
         queryPanel = new JPanel(new BorderLayout());
+        queryPanel.setBackground(new Color(192, 192, 192));  // Light gray background
 
         JButton backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(75, 30));
@@ -90,16 +92,34 @@ public class QueryApp {
 
         backButton.addActionListener(e -> switchToMainPanel());
 
+        JLabel queryDescription = new JLabel("Description of stuff!");
+        queryDescription.setFont(new Font("Arial", Font.BOLD, 16));
+        queryDescription.setHorizontalAlignment(SwingConstants.CENTER);
+        queryDescription.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
         JTable resultTable = executeQuery1AndGetTable();
+        styleTable(resultTable);
+
         JScrollPane scrollPane = new JScrollPane(resultTable);
 
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+
+        contentPanel.add(queryDescription);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        contentPanel.add(scrollPane);
+
         queryPanel.add(topPanel, BorderLayout.NORTH);
-        queryPanel.add(scrollPane, BorderLayout.CENTER);
+        queryPanel.add(contentPanel, BorderLayout.CENTER);
 
         mainFrame.setContentPane(queryPanel);
         mainFrame.revalidate();
     }
 
+
+    /**
+     * Method that switches the main frame to the Query #2 panel.
+     */
     private void switchToQuery2Panel() {
         queryPanel = new JPanel(new BorderLayout());
 
@@ -414,5 +434,16 @@ public class QueryApp {
         button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
 
         return button;
+    }
+
+    private void styleTable(JTable table) {
+        table.setRowHeight(20);
+        table.setFont(new Font("Arial", Font.PLAIN, 14));
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 17));
+
+        table.getColumnModel().getColumn(0).setPreferredWidth(50);  // product_id
+        table.getColumnModel().getColumn(1).setPreferredWidth(200); // item_name
+        table.getColumnModel().getColumn(2).setPreferredWidth(100); // total_quantity_sold
+        table.getColumnModel().getColumn(3).setPreferredWidth(100); // total_revenue
     }
 }
