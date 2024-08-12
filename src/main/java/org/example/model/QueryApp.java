@@ -9,6 +9,8 @@ import java.sql.*;
 import java.util.Vector;
 
 public class QueryApp {
+
+    static final int QUERY_PANEL_DIMENSIONS = 30;
     private JFrame mainFrame;
     private JPanel mainPanel;
     private JPanel queryPanel;
@@ -95,7 +97,8 @@ public class QueryApp {
         JLabel queryDescription = new JLabel("Description of stuff!");
         queryDescription.setFont(new Font("Arial", Font.BOLD, 16));
         queryDescription.setHorizontalAlignment(SwingConstants.CENTER);
-        queryDescription.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        queryDescription.setBorder(BorderFactory.createEmptyBorder(QUERY_PANEL_DIMENSIONS, QUERY_PANEL_DIMENSIONS,
+                                                                   QUERY_PANEL_DIMENSIONS, QUERY_PANEL_DIMENSIONS));
 
         JTable resultTable = executeQuery1AndGetTable();
         styleTable(resultTable);
