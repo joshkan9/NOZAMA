@@ -46,14 +46,14 @@ public class QueryApp {
         query3Label.setForeground(Color.BLACK);
 
         JButton query4Button = styleButton("Query #4");
-        JLabel query4Label = new JLabel("Replace Later", JLabel.CENTER);
+        JLabel query4Label = new JLabel("Dynamic Query", JLabel.CENTER);
         query4Label.setFont(new Font("Arial", Font.BOLD, 17));
         query4Label.setForeground(Color.BLACK);
 
         query1Button.addActionListener(e -> switchToQuery1Panel());
         query2Button.addActionListener(e -> switchToQuery2Panel());
         query3Button.addActionListener(e -> switchToQuery3Panel());
-        query4Button.addActionListener(e -> switchToQueryPanel("Query #4"));
+        query4Button.addActionListener(e -> switchToQuery4Panel());
 
         gbc.gridy = 0;
         mainPanel.add(query1Button, gbc);
@@ -155,6 +155,117 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
+    private void switchToQuery4Panel() {
+        queryPanel = new JPanel(new BorderLayout());
+
+        JButton backButton = new JButton("Back");
+        backButton.setPreferredSize(new Dimension(75, 30));
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.add(backButton);
+
+        backButton.addActionListener(e -> switchToMainPanel());
+
+        JPanel inputPanel = new JPanel(new FlowLayout());
+        JLabel categoryLabel = new JLabel("Select Category:");
+        JComboBox<String> categoryComboBox = new JComboBox<>(fetchCategories());
+        JLabel priceLabel = new JLabel("Price Less Than:");
+        JTextField priceInput = new JTextField(10);
+        JButton submitButton = new JButton("Submit");
+
+        inputPanel.add(categoryLabel);
+        inputPanel.add(categoryComboBox);
+        inputPanel.add(priceLabel);
+        inputPanel.add(priceInput);
+        inputPanel.add(submitButton);
+
+        queryPanel.add(topPanel, BorderLayout.NORTH);
+        queryPanel.add(inputPanel, BorderLayout.CENTER);
+
+        submitButton.addActionListener(e -> {
+            String selectedCategory = (String) categoryComboBox.getSelectedItem();
+            String priceText = priceInput.getText();
+            try {
+                double price = Double.parseDouble(priceText);
+                JTable resultTable = executeQuery4AndGetTable(selectedCategory, price);
+                JScrollPane scrollPane = new JScrollPane(resultTable);
+                queryPanel.remove(inputPanel);
+                queryPanel.add(scrollPane, BorderLayout.CENTER);
+                mainFrame.revalidate();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(mainFrame, "Please enter a valid price.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        mainFrame.setContentPane(queryPanel);
+        mainFrame.revalidate();
+    }
+
+    private String[] fetchCategories() {
+        NozamaDatabase db = new NozamaDatabase();
+        Connection connection = db.connect();
+
+        String query = "SELECT DISTINCT category_name FROM categories";
+        Vector<String> categories = new Vector<>();
+
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                categories.add(rs.getString("category_name"));
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return categories.toArray(new String[0]);
+    }
+
+    private JTable executeQuery4AndGetTable(String category, double price) {
+        NozamaDatabase db = new NozamaDatabase();
+        Connection connection = db.connect();
+
+        String query = "SELECT p.product_id, p.item_name, p.price "
+                + "FROM products p "
+                + "JOIN categories c ON p.category_id = c.category_id "
+                + "WHERE c.category_name = ? AND p.price < ?";
+
+        Vector<Vector<Object>> data = new Vector<>();
+        Vector<String> columnNames = new Vector<>();
+
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setString(1, category);
+            pstmt.setDouble(2, price);
+            ResultSet rs = pstmt.executeQuery();
+
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            for (int i = 1; i <= columnCount; i++) {
+                columnNames.add(metaData.getColumnName(i));
+            }
+
+            while (rs.next()) {
+                Vector<Object> vector = new Vector<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    vector.add(rs.getObject(i));
+                }
+                data.add(vector);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return new JTable(data, columnNames);
+    }
+
     private JTable executeQuery1AndGetTable() {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -247,7 +358,7 @@ public class QueryApp {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
 
-        String query = "SELECT c.customer_id as 'Customer ID', c.first_name, c.last_name, COUNT(od.product_id) AS total_products_purchased, "
+        String query = "SELECT c.customer_id, c.first_name, c.last_name, COUNT(od.product_id) AS total_products_purchased, "
                 + "SUM(od.quantity * od.price) AS total_revenue "
                 + "FROM customers c "
                 + "JOIN orders o ON c.customer_id = o.customer_id "
@@ -285,25 +396,6 @@ public class QueryApp {
         }
 
         return new JTable(data, columnNames);
-    }
-
-    private void switchToQueryPanel(String queryTitle) {
-        queryPanel = new JPanel(new BorderLayout());
-
-        JLabel queryLabel = new JLabel(queryTitle, SwingConstants.CENTER);
-        JButton backButton = new JButton("Back");
-
-        backButton.setPreferredSize(new Dimension(75, 30));
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.add(backButton);
-
-        backButton.addActionListener(e -> switchToMainPanel());
-
-        queryPanel.add(topPanel, BorderLayout.NORTH);
-        queryPanel.add(queryLabel, BorderLayout.CENTER);
-
-        mainFrame.setContentPane(queryPanel);
-        mainFrame.revalidate();
     }
 
     private void switchToMainPanel() {
