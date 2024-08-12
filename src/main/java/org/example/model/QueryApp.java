@@ -95,7 +95,7 @@ public class QueryApp {
         JLabel queryDescription = new JLabel("Description of stuff!");
         queryDescription.setFont(new Font("Arial", Font.BOLD, 16));
         queryDescription.setHorizontalAlignment(SwingConstants.CENTER);
-        queryDescription.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        queryDescription.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
         JTable resultTable = executeQuery1AndGetTable();
         styleTable(resultTable);
