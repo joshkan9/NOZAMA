@@ -312,14 +312,14 @@ public class QueryApp {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
 
-        String query = "SELECT p.product_id AS 'Product ID', p.item_name, SUM(od.quantity) AS total_quantity_sold, "
-                + "SUM(od.quantity * od.price) AS total_revenue "
+        String query = "SELECT p.product_id AS 'Product ID', p.item_name AS 'Item Name', SUM(od.quantity) AS 'Total Quantity Sold', "
+                + "SUM(od.quantity * od.price) AS 'Total Revenue'"
                 + "FROM products p "
                 + "JOIN orderdetails od ON p.product_id = od.product_id "
                 + "JOIN orders o ON od.order_id = o.order_id "
                 + "WHERE o.status = 'completed' "
                 + "GROUP BY p.product_id, p.item_name "
-                + "ORDER BY total_quantity_sold DESC;";
+                + "ORDER BY 'Total Quantity Sold' DESC;";
 
         Vector<Vector<Object>> data = new Vector<>();
         Vector<String> columnNames = new Vector<>();
@@ -348,7 +348,6 @@ public class QueryApp {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return new JTable(data, columnNames);
     }
 
@@ -356,13 +355,13 @@ public class QueryApp {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
 
-        String query = "SELECT a.state, SUM(od.quantity * od.price) AS total_revenue "
+        String query = "SELECT a.state AS 'State', SUM(od.quantity * od.price) AS 'Total Revenue'"
                 + "FROM customers c "
                 + "JOIN addresses a ON c.customer_id = a.customer_id "
                 + "JOIN orders o ON c.customer_id = o.customer_id "
                 + "JOIN orderdetails od ON o.order_id = od.order_id "
                 + "WHERE o.status = 'completed' AND a.state = ? "
-                + "ORDER BY total_revenue DESC;";
+                + "ORDER BY 'Total Revenue' DESC;";
 
         Vector<Vector<Object>> data = new Vector<>();
         Vector<String> columnNames = new Vector<>();
@@ -376,7 +375,7 @@ public class QueryApp {
             int columnCount = metaData.getColumnCount();
 
             for (int i = 1; i <= columnCount; i++) {
-                columnNames.add(metaData.getColumnName(i));
+                columnNames.add(metaData.getColumnLabel(i)); // Use getColumnLabel instead of getColumnName
             }
 
             while (rs.next()) {
@@ -400,7 +399,7 @@ public class QueryApp {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
 
-        String query = "SELECT c.customer_id, c.first_name, c.last_name, COUNT(od.product_id) AS total_products_purchased, "
+        String query = "SELECT c.customer_id, c.first_name, c.last_name, COUNT(od.product_id) AS 'Total Products Purchased', "
                 + "SUM(od.quantity * od.price) AS total_revenue "
                 + "FROM customers c "
                 + "JOIN orders o ON c.customer_id = o.customer_id "
@@ -420,7 +419,7 @@ public class QueryApp {
             int columnCount = metaData.getColumnCount();
 
             for (int i = 1; i <= columnCount; i++) {
-                columnNames.add(metaData.getColumnName(i));
+                columnNames.add(metaData.getColumnLabel(i)); // Use getColumnLabel instead of getColumnName
             }
 
             while (rs.next()) {
@@ -468,7 +467,7 @@ public class QueryApp {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
 
-        String query = "SELECT p.product_id, p.item_name, p.price "
+        String query = "SELECT p.product_id AS 'Product ID', p.item_name AS 'Item Name', p.price AS 'Item Price' "
                 + "FROM products p "
                 + "JOIN categories c ON p.category_id = c.category_id "
                 + "WHERE c.category_name = ? AND p.price < ?";
@@ -486,7 +485,7 @@ public class QueryApp {
             int columnCount = metaData.getColumnCount();
 
             for (int i = 1; i <= columnCount; i++) {
-                columnNames.add(metaData.getColumnName(i));
+                columnNames.add(metaData.getColumnLabel(i)); // Use getColumnLabel instead of getColumnName
             }
 
             while (rs.next()) {
