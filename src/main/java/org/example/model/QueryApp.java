@@ -260,72 +260,78 @@ public class QueryApp {
 
 
     private void switchToQuery4Panel() {
-        queryPanel = new JPanel(new BorderLayout());
+        queryPanel = new JPanel(new GridBagLayout());
+        queryPanel.setBackground(new Color(230, 230, 250));  // Light lavender color
 
-        // Back Button
         JButton backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(75, 30));
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(backButton);
+
+        // Set topPanel background to match queryPanel
+        topPanel.setBackground(new Color(230, 230, 250));
+
         backButton.addActionListener(e -> switchToMainPanel());
 
-        // Centered Panel for Input and Submit Button
+        // Input components
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-
-        // Reduce vertical spacing between components
-        gbc.insets = new Insets(0, 10, 5, 10); // Small vertical spacing
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
 
         // Category Label and ComboBox
         JLabel categoryLabel = new JLabel("Select Category:");
-        categoryLabel.setFont(new Font("Arial", Font.BOLD, 18));  // Bold and larger font
+        categoryLabel.setFont(new Font("Arial", Font.BOLD, 18));
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
         inputPanel.add(categoryLabel, gbc);
 
         JComboBox<String> categoryComboBox = new JComboBox<>(fetchCategories());
         categoryComboBox.setFont(new Font("Arial", Font.PLAIN, 18));
-        categoryComboBox.setPreferredSize(new Dimension(200, 30));  // Dropdown size
+        categoryComboBox.setPreferredSize(new Dimension(200, 30));
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
         inputPanel.add(categoryComboBox, gbc);
 
         // Price Label and Input
         JLabel priceLabel = new JLabel("Price Less Than:");
-        priceLabel.setFont(new Font("Arial", Font.BOLD, 18));  // Bold and larger font
+        priceLabel.setFont(new Font("Arial", Font.BOLD, 18));
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
         inputPanel.add(priceLabel, gbc);
 
         JTextField priceInput = new JTextField(10);
         priceInput.setFont(new Font("Arial", Font.PLAIN, 18));
-        priceInput.setPreferredSize(new Dimension(300, 30)); // Same width as the dropdown menu
+        priceInput.setPreferredSize(new Dimension(200, 30));
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
         inputPanel.add(priceInput, gbc);
 
         // Submit Button
         JButton submitButton = new JButton("Submit");
-        submitButton.setPreferredSize(new Dimension(100, 30));  // Increase size of button
+        submitButton.setPreferredSize(new Dimension(100, 30));
         submitButton.setFont(new Font("Arial", Font.BOLD, 18));
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(15, 10, 0, 10); // Add a bit more space above the button
         inputPanel.add(submitButton, gbc);
 
-        // Adding the input panel to the query panel with extra padding on top to move it upwards
-        JPanel wrapperPanel = new JPanel(new BorderLayout());
-        wrapperPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0)); // 50 pixels top padding
-        wrapperPanel.add(inputPanel, BorderLayout.NORTH);
+        // Add Input Panel to Query Panel
+        GridBagConstraints gbcMain = new GridBagConstraints();
+        gbcMain.gridx = 0;
+        gbcMain.gridy = 0;
+        gbcMain.weightx = 1.0;
+        gbcMain.fill = GridBagConstraints.HORIZONTAL;
+        queryPanel.add(topPanel, gbcMain);
 
-        queryPanel.add(topPanel, BorderLayout.NORTH);
-        queryPanel.add(wrapperPanel, BorderLayout.CENTER);
+        gbcMain.gridy++;
+        gbcMain.fill = GridBagConstraints.NONE;
+        queryPanel.add(inputPanel, gbcMain);
+
+        gbcMain.gridy++;
+        gbcMain.weighty = 1.0;
+        gbcMain.fill = GridBagConstraints.BOTH;
+        queryPanel.add(Box.createRigidArea(new Dimension(0, 10)), gbcMain);  // Adds some space below the input panel
 
         submitButton.addActionListener(e -> {
             String selectedCategory = (String) categoryComboBox.getSelectedItem();
@@ -333,9 +339,20 @@ public class QueryApp {
             try {
                 double price = Double.parseDouble(priceText);
                 JTable resultTable = executeQuery4AndGetTable(selectedCategory, price);
+                styleTable(resultTable);
+
                 JScrollPane scrollPane = new JScrollPane(resultTable);
-                queryPanel.remove(wrapperPanel);
-                queryPanel.add(scrollPane, BorderLayout.CENTER);
+                scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+                // Set preferred size for scroll pane
+                scrollPane.setPreferredSize(new Dimension(700, 400));
+
+                // Set scrollPane background
+                scrollPane.getViewport().setBackground(new Color(230, 230, 250));
+
+                queryPanel.remove(inputPanel);
+                gbcMain.gridy++;
+                queryPanel.add(scrollPane, gbcMain);
                 mainFrame.revalidate();
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(mainFrame, "Please enter a valid price.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
@@ -345,6 +362,7 @@ public class QueryApp {
         mainFrame.setContentPane(queryPanel);
         mainFrame.revalidate();
     }
+
 
 
     private JTable executeQuery1AndGetTable() {
