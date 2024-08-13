@@ -3,12 +3,14 @@ package org.example.model;
 import org.example.controller.NozamaDatabase;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
 import java.util.Vector;
 
+/**
+ * Query application window that displays the four queries that can be executed on the Nozama database.
+ */
 public class QueryApp {
 
     static final int QUERY_PANEL_DIMENSIONS = 30;
@@ -16,10 +18,16 @@ public class QueryApp {
     private JPanel mainPanel;
     private JPanel queryPanel;
 
+    /**
+     * Main method to start the application.
+     */
     public QueryApp() {
         createMainFrame();
     }
 
+    /**
+     * Create the main application frame with the four queries that can be executed on the Nozama database.
+     */
     private void createMainFrame() {
         mainFrame = new JFrame("Query Application");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,16 +92,18 @@ public class QueryApp {
         mainFrame.setVisible(true);
     }
 
+    /**
+     * Method that switches the main frame to the Query #1 panel.
+     */
     private void switchToQuery1Panel() {
         queryPanel = new JPanel(new GridBagLayout());
-        queryPanel.setBackground(new Color(230, 230, 250));  // Light lavender color
+        queryPanel.setBackground(new Color(230, 230, 250));
 
         JButton backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(75, 30));
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(backButton);
 
-        // Set topPanel background to match queryPanel
         topPanel.setBackground(new Color(230, 230, 250));
 
         backButton.addActionListener(e -> switchToMainPanel());
@@ -104,10 +114,8 @@ public class QueryApp {
         JScrollPane scrollPane = new JScrollPane(resultTable);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Set preferred size for scroll pane
         scrollPane.setPreferredSize(new Dimension(700, 400));
 
-        // Set scrollPane background
         scrollPane.getViewport().setBackground(new Color(230, 230, 250));
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -125,7 +133,7 @@ public class QueryApp {
 
         gbc.gridy++;
         gbc.weighty = 0.1;
-        queryPanel.add(Box.createRigidArea(new Dimension(0, 10)), gbc);  // Adds some space below the table
+        queryPanel.add(Box.createRigidArea(new Dimension(0, 10)), gbc);
 
         mainFrame.setContentPane(queryPanel);
         mainFrame.revalidate();
@@ -136,33 +144,28 @@ public class QueryApp {
      */
     private void switchToQuery2Panel() {
         queryPanel = new JPanel(new BorderLayout());
-        queryPanel.setBackground(new Color(230, 230, 250));  // Light lavender color to match other panels
+        queryPanel.setBackground(new Color(230, 230, 250));
 
-        // Back Button
         JButton backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(75, 30));
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.setBackground(new Color(230, 230, 250));  // Set background to match queryPanel
+        topPanel.setBackground(new Color(230, 230, 250));
         topPanel.add(backButton);
         backButton.addActionListener(e -> switchToMainPanel());
 
-        // Centered Panel for Input and Submit Button
         JPanel inputPanel = new JPanel(new GridBagLayout());
-        inputPanel.setBackground(new Color(230, 230, 250));  // Set background to match queryPanel
+        inputPanel.setBackground(new Color(230, 230, 250));
         GridBagConstraints gbc = new GridBagConstraints();
 
-        // Reduce vertical spacing between components
-        gbc.insets = new Insets(0, 10, 5, 10); // Small vertical spacing
+        gbc.insets = new Insets(0, 10, 5, 10);
 
-        // State Label and Dropdown
         JLabel stateLabel = new JLabel("Select State:");
-        stateLabel.setFont(new Font("Arial", Font.BOLD, 18));  // Bold and larger font
+        stateLabel.setFont(new Font("Arial", Font.BOLD, 18));
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
         inputPanel.add(stateLabel, gbc);
 
-        // Dropdown menu for state selection
         String[] states = {
                 "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA",
                 "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
@@ -172,34 +175,31 @@ public class QueryApp {
 
         JComboBox<String> stateDropdown = new JComboBox<>(states);
         stateDropdown.setFont(new Font("Arial", Font.PLAIN, 18));
-        stateDropdown.setPreferredSize(new Dimension(150, 30));  // Dropdown size
+        stateDropdown.setPreferredSize(new Dimension(150, 30));
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         inputPanel.add(stateDropdown, gbc);
 
-        // Submit Button
         JButton submitButton = new JButton("Submit");
-        submitButton.setPreferredSize(new Dimension(100, 30));  // Increase size of button
+        submitButton.setPreferredSize(new Dimension(100, 30));
         submitButton.setFont(new Font("Arial", Font.BOLD, 18));
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(10, 10, 0, 10); // Add a bit more space above the button
+        gbc.insets = new Insets(10, 10, 0, 10);
         inputPanel.add(submitButton, gbc);
 
-        // Table for displaying results
         String[] columnNames = {"State", "Total Revenue"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
         JTable resultsTable = new JTable(tableModel);
-        styleTable(resultsTable);  // Apply your styling method
+        styleTable(resultsTable);
         JScrollPane scrollPane = new JScrollPane(resultsTable);
-        scrollPane.getViewport().setBackground(new Color(230, 230, 250));  // Set background of the scroll pane's viewport
+        scrollPane.getViewport().setBackground(new Color(230, 230, 250));
 
-        // Adding the input panel and results table to the query panel
         JPanel wrapperPanel = new JPanel(new BorderLayout());
-        wrapperPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0)); // 50 pixels top padding
-        wrapperPanel.setBackground(new Color(230, 230, 250));  // Set background to match queryPanel
+        wrapperPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
+        wrapperPanel.setBackground(new Color(230, 230, 250));
         wrapperPanel.add(inputPanel, BorderLayout.NORTH);
         wrapperPanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -216,17 +216,18 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
-
+    /**
+     * Method that switches the main frame to the Query #3 panel.
+     */
     private void switchToQuery3Panel() {
         queryPanel = new JPanel(new GridBagLayout());
-        queryPanel.setBackground(new Color(230, 230, 250));  // Light lavender color
+        queryPanel.setBackground(new Color(230, 230, 250));
 
         JButton backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(75, 30));
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(backButton);
 
-        // Set topPanel background to match queryPanel
         topPanel.setBackground(new Color(230, 230, 250));
 
         backButton.addActionListener(e -> switchToMainPanel());
@@ -237,10 +238,8 @@ public class QueryApp {
         JScrollPane scrollPane = new JScrollPane(resultTable);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Set preferred size for scroll pane
         scrollPane.setPreferredSize(new Dimension(700, 400));
 
-        // Set scrollPane background
         scrollPane.getViewport().setBackground(new Color(230, 230, 250));
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -258,34 +257,33 @@ public class QueryApp {
 
         gbc.gridy++;
         gbc.weighty = 0.1;
-        queryPanel.add(Box.createRigidArea(new Dimension(0, 10)), gbc);  // Adds some space below the table
+        queryPanel.add(Box.createRigidArea(new Dimension(0, 10)), gbc);
 
         mainFrame.setContentPane(queryPanel);
         mainFrame.revalidate();
     }
 
-
+    /**
+     * Method that switches the main frame to the Query #4 panel.
+     */
     private void switchToQuery4Panel() {
         queryPanel = new JPanel(new GridBagLayout());
-        queryPanel.setBackground(new Color(230, 230, 250));  // Light lavender color
+        queryPanel.setBackground(new Color(230, 230, 250));
 
         JButton backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(75, 30));
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(backButton);
 
-        // Set topPanel background to match queryPanel
         topPanel.setBackground(new Color(230, 230, 250));
 
         backButton.addActionListener(e -> switchToMainPanel());
 
-        // Input components
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.CENTER;
 
-        // Category Label and ComboBox
         JLabel categoryLabel = new JLabel("Select Category:");
         categoryLabel.setFont(new Font("Arial", Font.BOLD, 18));
         gbc.gridx = 0;
@@ -299,7 +297,6 @@ public class QueryApp {
         gbc.gridy = 0;
         inputPanel.add(categoryComboBox, gbc);
 
-        // Price Label and Input
         JLabel priceLabel = new JLabel("Price Less Than:");
         priceLabel.setFont(new Font("Arial", Font.BOLD, 18));
         gbc.gridx = 0;
@@ -313,7 +310,6 @@ public class QueryApp {
         gbc.gridy = 1;
         inputPanel.add(priceInput, gbc);
 
-        // Submit Button
         JButton submitButton = new JButton("Submit");
         submitButton.setPreferredSize(new Dimension(100, 30));
         submitButton.setFont(new Font("Arial", Font.BOLD, 18));
@@ -322,7 +318,6 @@ public class QueryApp {
         gbc.gridwidth = 2;
         inputPanel.add(submitButton, gbc);
 
-        // Add Input Panel to Query Panel
         GridBagConstraints gbcMain = new GridBagConstraints();
         gbcMain.gridx = 0;
         gbcMain.gridy = 0;
@@ -337,7 +332,7 @@ public class QueryApp {
         gbcMain.gridy++;
         gbcMain.weighty = 1.0;
         gbcMain.fill = GridBagConstraints.BOTH;
-        queryPanel.add(Box.createRigidArea(new Dimension(0, 10)), gbcMain);  // Adds some space below the input panel
+        queryPanel.add(Box.createRigidArea(new Dimension(0, 10)), gbcMain);
 
         submitButton.addActionListener(e -> {
             String selectedCategory = (String) categoryComboBox.getSelectedItem();
@@ -350,10 +345,8 @@ public class QueryApp {
                 JScrollPane scrollPane = new JScrollPane(resultTable);
                 scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-                // Set preferred size for scroll pane
                 scrollPane.setPreferredSize(new Dimension(700, 400));
 
-                // Set scrollPane background
                 scrollPane.getViewport().setBackground(new Color(230, 230, 250));
 
                 queryPanel.remove(inputPanel);
@@ -369,8 +362,10 @@ public class QueryApp {
         mainFrame.revalidate();
     }
 
-
-
+    /**
+     * Method that executes Query #1 and returns the result as a JTable.
+     * @return JTable containing the result of Query #1
+     */
     private JTable executeQuery1AndGetTable() {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -415,6 +410,11 @@ public class QueryApp {
         return new JTable(data, columnNames);
     }
 
+    /**
+     * Method that adds the result of Query #2 to the table.
+     * @param userInput The state selected by the user
+     * @param tableModel The table model to which the result will be added
+     */
     private void addResultToTable(String userInput, DefaultTableModel tableModel) {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -447,6 +447,11 @@ public class QueryApp {
             JOptionPane.showMessageDialog(mainFrame, "Error occurred while fetching the result.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    /**
+     * Method that executes Query #3 and returns the result as a JTable.
+     * @return JTable containing the result of Query #3
+     */
     private JTable executeQuery3AndGetTable() {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -472,7 +477,7 @@ public class QueryApp {
             int columnCount = metaData.getColumnCount();
 
             for (int i = 1; i <= columnCount; i++) {
-                columnNames.add(metaData.getColumnLabel(i)); // Use getColumnLabel instead of getColumnName
+                columnNames.add(metaData.getColumnLabel(i));
             }
 
             while (rs.next()) {
@@ -492,6 +497,10 @@ public class QueryApp {
         return new JTable(data, columnNames);
     }
 
+    /**
+     * Method that fetches all the categories from the database.
+     * @return Array of category names
+     */
     private String[] fetchCategories() {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -516,6 +525,12 @@ public class QueryApp {
         return categories.toArray(new String[0]);
     }
 
+    /**
+     * Method that executes Query #4 and returns the result as a JTable.
+     * @param category The category selected by the user
+     * @param price The price entered by the user
+     * @return JTable containing the result of Query #4
+     */
     private JTable executeQuery4AndGetTable(String category, double price) {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -538,7 +553,7 @@ public class QueryApp {
             int columnCount = metaData.getColumnCount();
 
             for (int i = 1; i <= columnCount; i++) {
-                columnNames.add(metaData.getColumnLabel(i)); // Use getColumnLabel instead of getColumnName
+                columnNames.add(metaData.getColumnLabel(i));
             }
 
             while (rs.next()) {
@@ -558,11 +573,19 @@ public class QueryApp {
         return new JTable(data, columnNames);
     }
 
+    /**
+     * Method that switches the main frame back to the main panel.
+     */
     private void switchToMainPanel() {
         mainFrame.setContentPane(mainPanel);
         mainFrame.revalidate();
     }
 
+    /**
+     * Method that styles the buttons in the application.
+     * @param text The text to be displayed on the button
+     * @return JButton styled according to the application's theme
+     */
     private JButton styleButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 20));
@@ -574,6 +597,10 @@ public class QueryApp {
         return button;
     }
 
+    /**
+     * Method that styles the table in the application.
+     * @param table The table to be styled
+     */
     private void styleTable(JTable table) {
         table.setRowHeight(32);
         table.setFont(new Font("Arial", Font.PLAIN, 14));

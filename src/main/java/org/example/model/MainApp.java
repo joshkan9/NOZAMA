@@ -36,17 +36,14 @@ public class MainApp {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        // Top Panel for Logo and Title
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
         topPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Logo
         JLabel logoLabel = new JLabel(new ImageIcon("src/main/resources/nozama.png"));
         logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         topPanel.add(logoLabel);
 
-        // Title
         JLabel titleLabel = new JLabel("E-Commerce Project", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -54,12 +51,11 @@ public class MainApp {
 
         mainPanel.add(topPanel);
 
-        // Members' Contact Information
         JPanel membersPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
         membersPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         String[] members = {
-                "Joshua Kang", "Tyler Cairney", "Brandon Raggihanti", "Christina Situ"
+                "Joshua Kang", "Tyler Michael Cairney", "Brandon Raggihanti", "Christina Situ"
         };
 
         for (String member : members) {
@@ -68,7 +64,6 @@ public class MainApp {
 
         mainPanel.add(membersPanel);
 
-        // Project Description using JLabel with HTML for wrapping and centering
         JPanel descriptionPanel = new JPanel();
         descriptionPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -81,7 +76,6 @@ public class MainApp {
         descriptionPanel.add(descriptionLabel);
         mainPanel.add(descriptionPanel);
 
-        // Button to go to QueryApp
         JPanel buttonPanel = new JPanel();
         JButton queryAppButton = new JButton("Go to Query Application");
         queryAppButton.addActionListener(e -> openQueryApp());
@@ -98,7 +92,7 @@ public class MainApp {
      * Open the QueryApp window and close the main application window.
      */
     private void openQueryApp() {
-        mainFrame.dispose(); // Close the main application frame
-        SwingUtilities.invokeLater(QueryApp::new); // Open the QueryApp
+        mainFrame.dispose();
+        SwingUtilities.invokeLater(QueryApp::new);
     }
 }
