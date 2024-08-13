@@ -136,16 +136,19 @@ public class QueryApp {
      */
     private void switchToQuery2Panel() {
         queryPanel = new JPanel(new BorderLayout());
+        queryPanel.setBackground(new Color(230, 230, 250));  // Light lavender color to match other panels
 
         // Back Button
         JButton backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(75, 30));
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.setBackground(new Color(230, 230, 250));  // Set background to match queryPanel
         topPanel.add(backButton);
         backButton.addActionListener(e -> switchToMainPanel());
 
         // Centered Panel for Input and Submit Button
         JPanel inputPanel = new JPanel(new GridBagLayout());
+        inputPanel.setBackground(new Color(230, 230, 250));  // Set background to match queryPanel
         GridBagConstraints gbc = new GridBagConstraints();
 
         // Reduce vertical spacing between components
@@ -191,10 +194,12 @@ public class QueryApp {
         JTable resultsTable = new JTable(tableModel);
         styleTable(resultsTable);  // Apply your styling method
         JScrollPane scrollPane = new JScrollPane(resultsTable);
+        scrollPane.getViewport().setBackground(new Color(230, 230, 250));  // Set background of the scroll pane's viewport
 
         // Adding the input panel and results table to the query panel
         JPanel wrapperPanel = new JPanel(new BorderLayout());
         wrapperPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0)); // 50 pixels top padding
+        wrapperPanel.setBackground(new Color(230, 230, 250));  // Set background to match queryPanel
         wrapperPanel.add(inputPanel, BorderLayout.NORTH);
         wrapperPanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -210,6 +215,7 @@ public class QueryApp {
         mainFrame.setContentPane(queryPanel);
         mainFrame.revalidate();
     }
+
 
     private void switchToQuery3Panel() {
         queryPanel = new JPanel(new GridBagLayout());
