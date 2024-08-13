@@ -523,7 +523,9 @@ public class QueryApp {
         String query = "SELECT p.product_id AS 'Product ID', p.item_name AS 'Item Name', p.price AS 'Item Price' "
                 + "FROM products p "
                 + "JOIN categories c ON p.category_id = c.category_id "
-                + "WHERE c.category_name = ? AND p.price < ?";
+                + "WHERE c.category_name = ? AND p.price < ? "
+                + "ORDER BY p.price DESC";
+
 
         Vector<Vector<Object>> data = new Vector<>();
         Vector<String> columnNames = new Vector<>();
