@@ -3,6 +3,8 @@ package org.example.model;
 import org.example.controller.NozamaDatabase;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
 import java.util.Vector;
@@ -182,23 +184,28 @@ public class QueryApp {
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(15, 10, 0, 10); // Add a bit more space above the button
+        gbc.insets = new Insets(10, 10, 0, 10); // Add a bit more space above the button
         inputPanel.add(submitButton, gbc);
 
-        // Adding the input panel to the query panel with extra padding on top to move it upwards
+        // Table for displaying results
+        String[] columnNames = {"State", "Total Revenue"};
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        JTable resultsTable = new JTable(tableModel);
+        styleTable(resultsTable);  // Apply your styling method
+        JScrollPane scrollPane = new JScrollPane(resultsTable);
+
+        // Adding the input panel and results table to the query panel
         JPanel wrapperPanel = new JPanel(new BorderLayout());
         wrapperPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0)); // 50 pixels top padding
         wrapperPanel.add(inputPanel, BorderLayout.NORTH);
+        wrapperPanel.add(scrollPane, BorderLayout.CENTER);
 
         queryPanel.add(topPanel, BorderLayout.NORTH);
         queryPanel.add(wrapperPanel, BorderLayout.CENTER);
 
         submitButton.addActionListener(e -> {
             String selectedState = (String) stateDropdown.getSelectedItem();
-            JTable resultTable = executeQuery2AndGetTable(selectedState);
-            JScrollPane scrollPane = new JScrollPane(resultTable);
-            queryPanel.remove(wrapperPanel);
-            queryPanel.add(scrollPane, BorderLayout.CENTER);
+            addResultToTable(selectedState, tableModel);
             mainFrame.revalidate();
         });
 
@@ -386,50 +393,38 @@ public class QueryApp {
         return new JTable(data, columnNames);
     }
 
-    private JTable executeQuery2AndGetTable(String userInput) {
+    private void addResultToTable(String userInput, DefaultTableModel tableModel) {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
 
-        String query = "SELECT a.state AS 'State', SUM(od.quantity * od.price) AS 'Total Revenue'"
+        String query = "SELECT a.state AS 'State', SUM(od.quantity * od.price) AS 'Total Revenue' "
                 + "FROM customers c "
                 + "JOIN addresses a ON c.customer_id = a.customer_id "
                 + "JOIN orders o ON c.customer_id = o.customer_id "
                 + "JOIN orderdetails od ON o.order_id = od.order_id "
                 + "WHERE o.status = 'completed' AND a.state = ? "
-                + "ORDER BY 'Total Revenue' DESC;";
-
-        Vector<Vector<Object>> data = new Vector<>();
-        Vector<String> columnNames = new Vector<>();
+                + "GROUP BY a.state";
 
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
             pstmt.setString(1, userInput);
             ResultSet rs = pstmt.executeQuery();
 
-            ResultSetMetaData metaData = rs.getMetaData();
-            int columnCount = metaData.getColumnCount();
-
-            for (int i = 1; i <= columnCount; i++) {
-                columnNames.add(metaData.getColumnLabel(i)); // Use getColumnLabel instead of getColumnName
-            }
-
-            while (rs.next()) {
-                Vector<Object> vector = new Vector<>();
-                for (int i = 1; i <= columnCount; i++) {
-                    vector.add(rs.getObject(i));
-                }
-                data.add(vector);
+            if (rs.next()) {
+                String state = rs.getString("State");
+                double totalRevenue = rs.getDouble("Total Revenue");
+                tableModel.addRow(new Object[]{state, String.format("$%.2f", totalRevenue)});
+            } else {
+                JOptionPane.showMessageDialog(mainFrame, "No result found for this state", "No Results", JOptionPane.INFORMATION_MESSAGE);
             }
 
             rs.close();
             pstmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(mainFrame, "Error occurred while fetching the result.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        return new JTable(data, columnNames);
     }
-
     private JTable executeQuery3AndGetTable() {
         NozamaDatabase db = new NozamaDatabase();
         Connection connection = db.connect();
@@ -564,7 +559,5 @@ public class QueryApp {
 
         table.getColumnModel().getColumn(0).setPreferredWidth(50);  // product_id
         table.getColumnModel().getColumn(1).setPreferredWidth(200); // item_name
-        table.getColumnModel().getColumn(2).setPreferredWidth(100); // total_quantity_sold
-        table.getColumnModel().getColumn(3).setPreferredWidth(100); // total_revenue
     }
 }
